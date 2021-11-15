@@ -27,6 +27,13 @@ async function run() {
       const reviewCollection = database.collection('review');
       const usersCollection = database.collection('users');
 
+
+    // add product post api
+    app.post("/addProduct", async (req, res) => {
+      const result = await teaCollection.insertOne(req.body);
+      res.send(result);
+    });  
+
     //Product get api
     app.get('/shop', async (req, res) => {
         const cursor = teaCollection.find({});
@@ -54,9 +61,23 @@ async function run() {
       res.send(orders);
     });
 
+    // my orders
+    app.get('/myOrder/:email', async(req, res)=>{
+      const result = await ordersCollection.find({ email: req.params.email})
+      .toArray();
+      console.log(result);
+      res.send(result);
+    });
+    
+
     // deleted order
     app.delete("/delteOrder/:id", async (req, res) => {
       const result = await ordersCollection.deleteOne({_id: ObjectId(req.params.id),});
+      res.send(result);
+    });
+    // deleted product
+    app.delete("/deleteProduct/:id", async (req, res) => {
+      const result = await teaCollection.deleteOne({_id: ObjectId(req.params.id),});
       res.send(result);
     });
 
@@ -101,7 +122,23 @@ async function run() {
     const updateDoc = { $set: { role: 'admin' } };
     const result = await usersCollection.updateOne(filter, updateDoc);
     res.json(result);
-  })
+  });
+
+  // update status
+  app.put('/updateStatus/:id', (req, res)=>{
+    const id = req.params.id;
+    const updateStatus = req.body.status;
+    const filter = {_id: ObjectId(id)};
+    console.log(updateStatus);
+    ordersCollection.updateOne(filter, {
+      $set: {status: updateStatus},
+    })
+    .then(result=>{
+      res.send(result);
+    });
+  });
+
+
 
     } finally {
     //   await client.close();
