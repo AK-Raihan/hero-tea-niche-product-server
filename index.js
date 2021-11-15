@@ -26,6 +26,7 @@ async function run() {
       const ordersCollection = database.collection('orders');
       const reviewCollection = database.collection('review');
       const usersCollection = database.collection('users');
+      const ratingCollection = database.collection('rating');
 
 
     // add product post api
@@ -50,6 +51,7 @@ async function run() {
 
     // cofirm order post
     app.post("/confirmOrder", async (req, res) => {
+      console.log(req.body);
       const result = await ordersCollection.insertOne(req.body);
       res.send(result);
     });
@@ -136,6 +138,22 @@ async function run() {
     .then(result=>{
       res.send(result);
     });
+  });
+
+  //Rating POST
+  app.post("/rating", async (req, res) => {
+    const rating = req.body;
+    const result = await reviewCollection.insertOne(rating);
+
+    res.json(result);
+  });
+  //Rating GET
+  app.get("/rating", async (req, res) => {
+    const cursor = reviewCollection.find({});
+    const result = await cursor.toArray();
+    // const result = await ratingCollection.find(rating);
+
+    res.send(result);
   });
 
 
