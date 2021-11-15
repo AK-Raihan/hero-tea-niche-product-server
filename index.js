@@ -26,7 +26,7 @@ async function run() {
       const ordersCollection = database.collection('orders');
       const reviewCollection = database.collection('review');
       const usersCollection = database.collection('users');
-      const ratingCollection = database.collection('rating');
+  
 
 
     // add product post api
